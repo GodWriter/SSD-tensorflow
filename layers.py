@@ -50,7 +50,7 @@ class Layers(object):
         with tf.name_scope(scope, 'pad2d', [inputs]):
             if data_format == 'NHWC':
                 paddings = [[0, 0], [pad[0], pad[0]], [pad[1], pad[1]], [0, 0]]
-            elif data_format == 'NHWC':
+            elif data_format == 'NCHW':
                 paddings = [[0, 0], [0, 0], [pad[0], pad[0]], [pad[1], pad[1]]]
 
             net = tf.pad(inputs, paddings, mode=mode)
