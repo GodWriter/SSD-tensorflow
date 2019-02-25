@@ -94,3 +94,58 @@
 > 明日计划
 
 * SSD网络搭建开工，完成部分工作
+
+
+
+### 2018/2/25
+
+> 今日计划
+
+* 阅读源码，完成SSD卷积网络部分搭建，至少是最外层的卷积
+
+
+
+> model
+
+* 在撰写SSDParams时，这些参数还有很多和论文中对应不上，需要看代码理解
+  * **待解决，所有参数的含义**
+
+* 在撰写SSDNet.net()的参数时
+  * 省略了is_training参数，将通过config的参数来传递
+  * **省略了prediction_fn，暂时固定为softmax()方法**
+* 撰写ssd_net(...)
+  * 首先，要修改slim.conv2d()，将其替换为tensorflow原生代码
+    * 需要重命名每层卷积的scope，将按照Vgg16的规范来
+    * slim.conv2d()源码中，padding='SAME'，stride=1
+    * 激活函数默认为relu
+  * 其次，需要修改slim.max_pool2d()
+    * 源码中，**padding='VALID'**，若代码之后出bug了，这里找一下原因
+    * 源码中，stride=2，即默认的步长为2
+    * 使用with tf.name_scope()包围，因为池化操作中没有变量variable
+  * 其中**Block6使用的是空洞卷积**
+    * 故在Layers中添加了空洞卷积atrous_conv2d()
+    * 模仿卷积的方法写
+    * padding应该就是"SAME"
+    * dropout层调用的是tf.layers.dropout()
+  * block8中调用了tf.pad()方法，但是自己做了装饰类，并考虑了不同的输入维度
+  * vgg16默认每层卷积输出的激活函数为relu，故包含在了conv2d里面
+
+
+
+> 今日总结
+
+* 写了Layers层，其中包括
+  * conv2d
+  * max_pool
+  * 空洞卷积
+  * pad
+* 利用自己的写的Layers层，搭建SSD部分网络；直至预测层之前
+  * padding都明确标出来，若是维度有问题，需要检查
+  * 步长也明确标出来了
+
+
+
+> 明日计划
+
+* 首先，撰写模型测试代码，打印每层的shape，并测试能够正常输出
+* 其次，撰写预测层代码

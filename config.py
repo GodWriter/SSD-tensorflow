@@ -13,6 +13,8 @@ def parse_args():
                         help='The number of GPU used')
     parser.add_argument('--module', type=str, default='test',
                         help='Module to select: train, test ...')
+    parser.add_argument('--is_training', type=bool, default=True,
+                        help='When the module is train, True, else False')
     parser.add_argument('--dataset', type=str, default='data/VOC2012-train',
                         help='Path of the dataset')
     parser.add_argument('--tfrecord_dir', type=str, default='data/VOC-tfrecord',
