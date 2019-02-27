@@ -176,8 +176,20 @@
 
 * 在调用slim.conv2d()完成全卷积操作的时候，activation_fn=None，故没有使用激活函数；故我要修改Layers.conv2d，加入activation_fn形参，默认为True的情况下调用relu(),  否则就不传入激活函数，直接返回。这样就不需要大量的修改代码。
 
+* 在计算loc_pred时，如果使用slim.conv2d可以不用手动计算输入net的channel；但是，自己写的话，就要用代码得到net的channel，此外还要考虑输入数据的格式是'NHWC'还是'NCHW'；默认的输入是NHWC，即通道是最后一维。故就选择最后一维吧
+
 在ssd_multibox_layers()方法结束后，整个网络框架就搭建完毕了；接下来就是对输出的处理，重点关注**batch_size**具体的作用
 
 
 
-> 
+> 今日总结
+
+* 撰写ssd_multibox_layer()代码时，遇到较多问题，很多函数未写完整
+  * l2_normal()
+  * 如何选择通道等各种小trick
+
+
+
+> 明日计划
+
+* 继续撰写ssd_multibox_layer()

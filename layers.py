@@ -5,7 +5,7 @@ from tensorflow.python.ops import init_ops
 
 class Layers(object):
     @staticmethod
-    def conv2d(inputs, in_channels, out_channels, kernel, strides, padding, name):
+    def conv2d(inputs, in_channels, out_channels, kernel, strides, padding, name, activation_fn=True):
         with tf.variable_scope(name) as scope:
             weights = tf.get_variable(scope.name + '_w',
                                       [kernel, kernel, in_channels, out_channels],
@@ -17,10 +17,11 @@ class Layers(object):
                                      initializer=tf.constant_initializer(0.1))
 
             conv = tf.nn.conv2d(inputs, weights, strides=[1, strides, strides, 1], padding=padding)
-            pre_activation = tf.nn.bias_add(conv, biases)
-            relu_activation = tf.nn.relu(pre_activation, name=scope.name)
+            conv = tf.nn.bias_add(conv, biases)
+            if activation_fn:
+                conv = tf.nn.relu(conv, name=scope.name)
 
-        return relu_activation
+        return conv
 
     @staticmethod
     def atrous_conv2d(inputs, in_channels, out_channels, kernel, rate, padding, name):
@@ -59,7 +60,3 @@ class Layers(object):
 
         return net
 
-    @staticmethod
-    def l2_normalization(inputs,
-                         scaling=False,
-                         scale_initializer=init_ops.ones_initializer()):
