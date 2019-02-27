@@ -149,3 +149,35 @@
 
 * 首先，撰写模型测试代码，打印每层的shape，并测试能够正常输出
 * 其次，撰写预测层代码
+
+
+
+### 2019/2/27
+
+> 今日计划
+
+* 由于没有测试条件，撰写预测层的代码
+* 代码测试，解决Bug
+
+
+
+> ssd_multibox_layer()
+
+* l2_normalization()
+  * 其中用到了tensorflow.python.ops import init_ops
+    * 在tensorflow API 中并没有
+    * 网上搜了一下，说是tensorflow的装饰类，不用仔细研究
+  * 用到了tensorflow.contrib.layers.python.layers import utils
+    * 在tensorflow2.0中已经完全移除tf.contrib，故这个方法可能需要自己重写
+    * 但在仔细阅读代码后发现，该方法并没有起到作用，故直接返回输出即可
+  * 在详细阅读的过程中，发现utils多次调用，用复杂的代码完成了简单的工作
+
+  **故打算自己重写l2_normalization()**
+
+* 在调用slim.conv2d()完成全卷积操作的时候，activation_fn=None，故没有使用激活函数；故我要修改Layers.conv2d，加入activation_fn形参，默认为True的情况下调用relu(),  否则就不传入激活函数，直接返回。这样就不需要大量的修改代码。
+
+在ssd_multibox_layers()方法结束后，整个网络框架就搭建完毕了；接下来就是对输出的处理，重点关注**batch_size**具体的作用
+
+
+
+> 

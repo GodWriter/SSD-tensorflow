@@ -87,6 +87,17 @@ class SSDNet(object):
 # =========================================================================== #
 # Functional definition of VGG-based SSD 300.
 # =========================================================================== #
+def ssd_multibox_layer(inputs,
+                       num_classes,
+                       sizes,
+                       ratios=[1],
+                       normalization=-1,
+                       bn_normalization=False):
+    net = inputs
+    if normalization > 0:
+        net =
+
+
 def ssd_net(args,
             inputs,
             num_classes=SSDNet.default_params.num_classes,
@@ -170,4 +181,14 @@ def ssd_net(args,
         end_points[end_point] = net
 
         # Prediction and localisations layers
-        pass
+        predictions = []
+        logits = []
+        localisations = []
+        for i, layer in enumerate(feat_layers):
+            with tf.variable_scope(layer + '_box'):
+                prediction_, localisation_ = ssd_multibox_layer(end_points[layer],
+                                                                num_classes,
+                                                                anchor_sizes[i],
+                                                                anchor_ratios[i],
+                                                                normalizations[i])
+                pass

@@ -1,5 +1,7 @@
 import tensorflow as tf
 
+from tensorflow.python.ops import init_ops
+
 
 class Layers(object):
     @staticmethod
@@ -56,3 +58,8 @@ class Layers(object):
             net = tf.pad(inputs, paddings, mode=mode)
 
         return net
+
+    @staticmethod
+    def l2_normalization(inputs,
+                         scaling=False,
+                         scale_initializer=init_ops.ones_initializer()):
